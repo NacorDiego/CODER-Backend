@@ -25,9 +25,11 @@ class ProductManager {
     }
 
     addProduct(product) {
+        const existingIds = this.products.map(item => item.id);
+        const newProductId = existingIds.length > 0 ? Math.max(...existingIds) + 1 : 1;
         const newProduct = {
             ...product,
-            id: this.products.length + 1,
+            id: newProductId,
         };
         this.products.push(newProduct);
         this.saveProducts();

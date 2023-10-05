@@ -1,20 +1,112 @@
 [
-    {
-        "id": 1,
-        "name": "Coca Cola",
-        "description": "Gaseosa",
-        "price": 19.99
-    },
-    {
-        "id": 2,
-        "name": "Tres Trigos",
-        "description": "Arroz",
-        "price": 29.99
-    },
-    {
-        "id": 3,
-        "name": "Natura",
-        "description": "Aceite",
-        "price": 39.99
-    }
+  {
+    "title": "Coca Cola",
+    "description": "Dulce",
+    "code": "46544",
+    "price": 19.99,
+    "status": true,
+    "stock": 100,
+    "category": "Gaseosas",
+    "thumbnails": "",
+    "id": 1
+  },
+  {
+    "title": "Tres Trigos",
+    "description": "El más picante del condado",
+    "code": "84646",
+    "price": 29.99,
+    "status": true,
+    "stock": 98,
+    "category": "Arroz",
+    "thumbnails": "",
+    "id": 2
+  },
+  {
+    "title": "Natura",
+    "description": "El placer del buen savor",
+    "code": "21655",
+    "price": 39.99,
+    "status": true,
+    "stock": 45,
+    "category": "Aceites",
+    "thumbnails": "",
+    "id": 3
+  },
+  {
+    "title": "Sprite",
+    "description": "La más rica",
+    "code": "45613",
+    "price": 15.99,
+    "status": true,
+    "stock": 65,
+    "category": "Gaseosas",
+    "thumbnails": "",
+    "id": 4
+  },
+  {
+    "title": "Rosamonte",
+    "description": "Suave sabor del mate",
+    "code": "65121",
+    "price": 22.99,
+    "status": true,
+    "stock": 100,
+    "category": "Yerba",
+    "thumbnails": "",
+    "id": 5
+  },
+  {
+    "title": "Lesama",
+    "description": "Dulce como el corazon de tu ex",
+    "code": "65415",
+    "price": 5.99,
+    "status": true,
+    "stock": 32,
+    "category": "Azucar",
+    "thumbnails": "",
+    "id": 6
+  },
+  {
+    "title": "Pepitas",
+    "description": "Ricas",
+    "code": "76546",
+    "price": 10.99,
+    "status": true,
+    "stock": 65,
+    "category": "Galletitas",
+    "thumbnails": "",
+    "id": 7
+  },
+  {
+    "title": "Maná",
+    "description": "Disfruta de la vida",
+    "code": "32165",
+    "price": 11.99,
+    "status": true,
+    "stock": 80,
+    "category": "Galletitas",
+    "thumbnails": "",
+    "id": 8
+  },
+  {
+    "title": "Dave",
+    "description": "Blanca flor de la vida",
+    "code": "95456",
+    "price": 39.99,
+    "status": true,
+    "stock": 65,
+    "category": "Jabón",
+    "thumbnails": "",
+    "id": 9
+  },
+  {
+    "title": "Plusbele",
+    "description": "Hogar dulce hogar",
+    "code": "62342",
+    "price": 41.99,
+    "status": true,
+    "stock": 49,
+    "category": "Shampoo",
+    "thumbnails": "",
+    "id": 10
+  }
 ]
