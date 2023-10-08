@@ -74,8 +74,8 @@ app.post('/', (req, res) => {
 });
 
 app.put('/products/:pid', (req, res) => {
-    const { pid } = req.params; // Obtén el ID del producto de los parámetros de la URL
-    const updatedProductData = req.body; // Obtén los datos actualizados del producto del cuerpo de la solicitud
+    const { pid } = req.params; // Obtener el ID del producto de los parámetros de la URL
+    const updatedProductData = req.body; // Obtener los datos actualizados del producto del cuerpo de la solicitud
 
     // Busca el producto por ID
     const productToUpdate = productManager.getProductById(parseInt(pid));
