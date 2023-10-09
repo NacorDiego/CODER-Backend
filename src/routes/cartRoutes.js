@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const CartManager = require('./CartManager.js');
+const CartManager = require('../managers/CartManager.js');
 
 // Crear una instancia de CartManager con la ruta al archivo de carritos
-const cartManager = new CartManager('carts.json');
+const cartManager = new CartManager('../data/carts.json');
 
 router.get('/:cid', (req, res) => {
     const { cid } = req.params;

@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
-const productRoutes = require('./productRoutes.js');
-const cartRoutes = require('./cartRoutes.js');
+const productRoutes = require('./routes/productRoutes.js');
+const cartRoutes = require('./routes/cartRoutes.js');
 const port = 8080;
 
 // Middleware para procesar JSON en las solicitudes
