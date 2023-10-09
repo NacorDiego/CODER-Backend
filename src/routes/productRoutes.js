@@ -3,7 +3,7 @@ const router = express.Router();
 const ProductManager = require('../managers/ProductManager.js');
 
 // Crear una instancia de ProductManager con la ruta al archivo de productos
-const productManager = new ProductManager('../data/productos.json');
+const productManager = new ProductManager('./data/productos.json');
 
 router.get('/', (req, res) => {
     console.log('Solicitud GET a /products');
