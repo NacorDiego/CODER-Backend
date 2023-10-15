@@ -1,6 +1,7 @@
-const express = require('express');
+import express from 'express';
+import ProductManager from '../managers/ProductManager.js';
+
 const router = express.Router();
-const ProductManager = require('../managers/ProductManager.js');
 
 // Crear una instancia de ProductManager con la ruta al archivo de productos
 const productManager = new ProductManager('./data/productos.json');
@@ -105,4 +106,4 @@ router.delete('/:pid', (req, res) => {
     res.json({ message: 'Producto eliminado correctamente' });
 });
 
-module.exports = router;
+export default router;
