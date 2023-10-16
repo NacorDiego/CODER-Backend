@@ -1,12 +1,15 @@
 import express from 'express';
 import productRoutes from './routes/productRoutes.js';
 import cartRoutes from './routes/cartRoutes.js';
+import viewsRouter from './routes/views.router.js';
 import handlebars from 'express-handlebars';
 import __dirname from './utils.js';
 
-const app = express();
 const port = 8080;
+const app = express();
+const httpServer = app.listen(port, "localhost", () => console.log(`Servidor Express en ejecución en http://localhost:${port}`));
 
+const socketServer = new Server(httpServer);
 // Inicializamos el motor indicando con app.engine('qué motor utilizaremos', el motor instanciado)
 app.engine('handlebars', handlebars.engine());
 // Indicamos en qué parte estarán las rutas
@@ -20,10 +23,13 @@ app.use(express.static(__dirname + '/public'));
 // Middleware para procesar JSON en las solicitudes
 app.use(express.json());
 
-// Usar el router de productos
+// Usar el route de productos y carrito.
 app.use('/api/productos', productRoutes);
 app.use('/api/carts', cartRoutes);
 
-app.listen(port,"localhost", () => {
-    console.log(`Servidor Express en ejecución en http://localhost:${port}`);
-});
+// La lógica de las vistas queda en el router de vistas
+app.use('/', viewsRouter);
+
+// app.listen(port,"localhost", () => {
+//     console.log(`Servidor Express en ejecución en http://localhost:${port}`);
+// });
