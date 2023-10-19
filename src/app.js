@@ -40,6 +40,11 @@ socketServer.on('connection', socket => {
     socket.on('message', data => {
         console.log(data);
     });
+
+    // 3 formas de enviar mensajes desde el servidor
+    socket.emit('evento_para_socket_individual','Este msj solo lo recibe el socket.');
+    socket.broadcast.emit('evento_para_todos_menos_el_actual','Este msj lo reciben todos menos el socket actual.');
+    socketServer.emit('evento_para_todos','Este msj lo reciben todos los socket.');
 });
 
-// pag 50
+// video 1:20:00
