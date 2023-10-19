@@ -20,8 +20,12 @@ app.set('views', __dirname + '/views');
 // Indicamos que 'handlebars' sea nuestro motor de vistas predeterminado
 app.set('view engine', 'handlebars');
 
-// Seteamos de manera estática nuestra carpeta public
-app.use(express.static(__dirname + '/public'));
+// Seteo de manera estática la carpeta public mediante '__dirname'
+// app.use(express.static(__dirname + '/public'));
+
+// Seteo de manera estática la carpeta public mediante 'process.cwd()'
+app.use(express.static(process.cwd() + '/public'));
+
 
 // Middleware para procesar JSON en las solicitudes
 app.use(express.json());
