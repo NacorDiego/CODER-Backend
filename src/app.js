@@ -3,7 +3,7 @@ import express from 'express'
 import { Server } from 'socket.io'
 import productRoutes from './routes/product.routes.js'
 import cartRoutes from './routes/cart.routes.js'
-import viewsRoutes from './routes/views.routes.js'
+import { router as viewsRouter} from './routes/views.routes.js'
 import { engine } from 'express-handlebars'
 
 const port = 8080
@@ -24,7 +24,7 @@ app.use('/api/productos', productRoutes)
 app.use('/api/carts', cartRoutes)
 
 // La lógica de las vistas queda en el router de vistas
-app.use('/', viewsRoutes)
+app.use('/', viewsRouter)
 
 socketServer.on('connection', socket => {
     console.log('Nuevo cliente conectado')
