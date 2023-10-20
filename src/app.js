@@ -5,7 +5,6 @@ import productRoutes from './routes/product.routes.js'
 import cartRoutes from './routes/cart.routes.js'
 import viewsRoutes from './routes/views.routes.js'
 import { engine } from 'express-handlebars'
-import __dirname from './utils.js'
 
 const port = 8080
 const app = express()
