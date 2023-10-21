@@ -3,7 +3,7 @@ import express from 'express'
 import { Server } from 'socket.io'
 import productRoutes from './routes/product.routes.js'
 import cartRoutes from './routes/cart.routes.js'
-import { router as viewsRouter} from './routes/views.routes.js'
+import { router as viewsRouter } from './routes/views.routes.js'
 import { engine } from 'express-handlebars'
 
 const port = 8080
@@ -12,7 +12,7 @@ const httpServer = createServer(app)
 const socketServer = new Server(httpServer)
 
 app.engine('handlebars', engine()) // Inicializamos el motor indicando con app.engine('qué motor utilizaremos', el motor instanciado)
-app.set('views', process.cwd() + '/views') // Indicamos en qué parte estarán las rutas
+app.set('views', process.cwd() + '/src/views') // Indicamos en qué parte estarán las rutas
 app.set('view engine', 'handlebars') // Indicamos que 'handlebars' sea nuestro motor de vistas predeterminado
 app.use(express.static(process.cwd() + '/public'))
 
