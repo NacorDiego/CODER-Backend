@@ -11,4 +11,9 @@ router.get('/', (req, res) => {
     res.render('home', { products })
 })
 
+router.get('/realtimeproducts',(req, res) => {
+    const products = productManager.getProducts()
+    res.render('realTimeProducts',{ products })
+})
+
 export { router }
