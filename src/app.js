@@ -9,7 +9,7 @@ import { engine } from 'express-handlebars'
 const port = 8080
 const app = express()
 const httpServer = createServer(app)
-const socketServer = new Server(httpServer)
+const io = new Server(httpServer)
 
 app.engine('handlebars', engine()) // Inicializamos el motor indicando con app.engine('qué motor utilizaremos', el motor instanciado)
 app.set('views', process.cwd() + '/src/views') // Indicamos en qué parte estarán las rutas
@@ -26,7 +26,7 @@ app.use('/api/carts', cartRoutes)
 // La lógica de las vistas queda en el router de vistas
 app.use('/', viewsRouter)
 
-socketServer.on('connection', socket => {
+io.on('connection', socket => {
     console.log('Nuevo cliente conectado')
 
     // Dejo al socket escuchando hasta que el cliente mande un msj o evento al ID 'message'
@@ -37,7 +37,9 @@ socketServer.on('connection', socket => {
     // 3 formas de enviar mensajes desde el servidor
     socket.emit('evento_para_socket_individual','Este msj solo lo recibe el socket.')
     socket.broadcast.emit('evento_para_todos_menos_el_actual','Este msj lo reciben todos menos el socket actual.')
-    socketServer.emit('evento_para_todos','Este msj lo reciben todos los socket.')
+    io.emit('evento_para_todos','Este msj lo reciben todos los socket.')
 })
+
+export const socketServer = io;
 
 httpServer.listen(port, () => console.log(`Server is running at http://localhost:${port}`))
