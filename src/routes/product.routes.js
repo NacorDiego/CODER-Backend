@@ -1,5 +1,6 @@
 import express from 'express';
 import ProductManager from '../managers/ProductManager.js';
+import { socketServer } from '../app.js'
 
 const router = express.Router();
 
@@ -61,6 +62,9 @@ router.post('/', (req, res) => {
     // Guardar los productos actualizados en el archivo "productos.json"
     productManager.saveProducts();
 
+    // Envio el evento 'nueva-solicitud' al servidor que esta escuchando en 'views.router' para que ejecute el evento 'productos-actualizados'
+    socketServer.emit('nueva-solicitud')
+
     // Enviar una respuesta de éxito
     res.status(201).json({ message: 'Producto agregado correctamente', newProduct });
 });
@@ -102,8 +106,11 @@ router.delete('/:pid', (req, res) => {
     // Guarda los productos actualizados en el archivo "productos.json"
     productManager.saveProducts();
 
+    // Envio el evento 'nueva-solicitud' al servidor que esta escuchando en 'views.router' para que ejecute el evento 'productos-actualizados'
+    socketServer.emit('nueva-solicitud')
+
     // Envía una respuesta con un mensaje de éxito
     res.json({ message: 'Producto eliminado correctamente' });
 });
 
-export default router;
+export default router

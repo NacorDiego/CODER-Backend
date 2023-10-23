@@ -40,6 +40,6 @@ io.on('connection', socket => {
     io.emit('evento_para_todos','Este msj lo reciben todos los socket.')
 })
 
-export const socketServer = io;
-
 httpServer.listen(port, () => console.log(`Server is running at http://localhost:${port}`))
+
+export const socketServer = io;
