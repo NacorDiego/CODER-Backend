@@ -1,28 +1,52 @@
 import { Router } from 'express'
 import ProductManager from '../managers/ProductManager.js'
-import { socketServer } from '../app.js'
 
 const router = Router()
 
-const productManager = new ProductManager(process.cwd() + '/src/data/productos.json')
+export const viewsRouter = (io) => {
+    const productManager = new ProductManager(process.cwd() + '/src/data/productos.json')
 
-router.get('/', (req, res) => {
-    const products = productManager.getProducts()
-    res.render('home', { products })
-})
+    router.get('/', (req, res) => {
+      const products = productManager.getProducts()
+      res.render('home', { products })
+    })
 
-router.get('/realtimeproducts',(req, res) => {
-    const products = productManager.getProducts()
-    res.render('realTimeProducts', { products })
-})
+    router.get('/realtimeproducts', (req, res) => {
+      const products = productManager.getProducts()
+      res.render('realTimeProducts', { products })
+    })
 
-// En tu servidor WebSocket, emite un evento cuando se agrega o elimina un producto
-socketServer.on("connection", (socket) => {
-    socket.on("nueva-solicitud", () => {
+    // En tu servidor WebSocket, emite un evento cuando se agrega o elimina un producto
+    io.on('connection', (socket) => {
+      socket.on('nueva-solicitud', () => {
         const products = productManager.getProducts()
         // Emite los productos actualizados a la vista en tiempo real
-        socketServer.emit("productos-actualizados", products)
+        io.emit('productos-actualizados', products)
+      })
     })
-})
 
-export { router }
+    return router
+}
+
+// const productManager = new ProductManager(process.cwd() + '/src/data/productos.json')
+
+// router.get('/', (req, res) => {
+//     const products = productManager.getProducts()
+//     res.render('home', { products })
+// })
+
+// router.get('/realtimeproducts',(req, res) => {
+//     const products = productManager.getProducts()
+//     res.render('realTimeProducts', { products })
+// })
+
+// // En tu servidor WebSocket, emite un evento cuando se agrega o elimina un producto
+// socketServer.on("connection", (socket) => {
+//     socket.on("nueva-solicitud", () => {
+//         const products = productManager.getProducts()
+//         // Emite los productos actualizados a la vista en tiempo real
+//         socketServer.emit("productos-actualizados", products)
+//     })
+// })
+
+// export { router }
