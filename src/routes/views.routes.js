@@ -25,6 +25,12 @@ export const viewsRouter = (io) => {
       })
     })
 
+    io.on('productos-actualizados', (products) => {
+      console.log('Productos actualizados recibidos: ', products)
+      // Actualizo la vista con la lista actualizada
+      res.render('realTimeProducts', { products })
+    })
+
     return router
 }
 

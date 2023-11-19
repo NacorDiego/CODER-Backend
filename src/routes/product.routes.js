@@ -1,47 +1,51 @@
-import express from 'express';
-import ProductManager from '../managers/ProductManager.js';
+import express from 'express'
+import ProductManager from '../managers/ProductManager.js'
 import { socketServer } from '../app.js'
+import path from 'path'
 
-const router = express.Router();
+const router = express.Router()
 
 // Crear una instancia de ProductManager con la ruta al archivo de productos
-const productManager = new ProductManager('./data/productos.json');
+// const productManager = new ProductManager('./data/productos.json')
+
+const productosJsonPath = path.join(process.cwd(), 'src/data/productos.json')
+const productManager = new ProductManager(productosJsonPath)
 
 router.get('/', (req, res) => {
-    console.log('Solicitud GET a /products');
-    const { limit } = req.query;
+    console.log('Solicitud GET a /products')
+    const { limit } = req.query
 
-    const products = productManager.getProducts();
-    console.log('Productos:', products);
+    const products = productManager.getProducts()
+    console.log('Productos:', products)
 
     if (limit) {
-        const limitedProducts = products.slice(0, parseInt(limit));
-        res.json(limitedProducts);
+        const limitedProducts = products.slice(0, parseInt(limit))
+        res.json(limitedProducts)
     } else {
-        res.json(products);
+        res.json(products)
     }
-});
+})
 
 // Endpoint para obtener un producto por ID
 router.get('/:pid', (req, res) => {
-    const { pid } = req.params;
-    const product = productManager.getProductById(parseInt(pid));
+    const { pid } = req.params
+    const product = productManager.getProductById(parseInt(pid))
 
     if (product) {
-        res.json(product);
+        res.json(product)
     } else {
-        res.status(404).json({ error: 'Producto no encontrado' });
+        res.status(404).json({ error: 'Producto no encontrado' })
     }
-});
+})
 
 router.post('/', (req, res) => {
-    console.log('Solicitud POST a /'); // Registro de depuración
+    console.log('Solicitud POST a /') // Registro de depuración
 
-    const { title, description, code, price, stock, category, thumbnails } = req.body;
+    const { title, description, code, price, stock, category, thumbnails } = req.body
 
     // Validar que todos los campos obligatorios estén presentes
     if (!title || !description || !code || !price || !stock || !category) {
-        return res.status(400).json({ error: 'Todos los campos obligatorios deben estar presentes' });
+        return res.status(400).json({ error: 'Todos los campos obligatorios deben estar presentes' })
     }
 
     // Crear un nuevo objeto de producto con los campos proporcionados
@@ -54,63 +58,67 @@ router.post('/', (req, res) => {
         stock,
         category,
         thumbnails: thumbnails || [], // Si no se proporciona "thumbnails", usar un array vacío
-    };
+    }
 
     // Agregar el nuevo producto al conjunto de productos
-    productManager.addProduct(newProduct);
+    productManager.addProduct(newProduct)
 
     // Guardar los productos actualizados en el archivo "productos.json"
-    productManager.saveProducts();
+    productManager.saveProducts()
 
     // Envio el evento 'nueva-solicitud' al servidor que esta escuchando en 'views.router' para que ejecute el evento 'productos-actualizados'
-    socketServer.emit('nueva-solicitud')
+    // socketServer.emit('nueva-solicitud')
+
+    socketServer.emit('productos-actualizados', productManager.getProducts())
 
     // Enviar una respuesta de éxito
-    res.status(201).json({ message: 'Producto agregado correctamente', newProduct });
-});
+    res.status(201).json({ message: 'Producto agregado correctamente', newProduct })
+})
 
 router.put('/:pid', (req, res) => {
-    const { pid } = req.params; // Obtener el ID del producto de los parámetros de la URL
-    const updatedProductData = req.body; // Obtener los datos actualizados del producto del cuerpo de la solicitud
+    const { pid } = req.params // Obtener el ID del producto de los parámetros de la URL
+    const updatedProductData = req.body // Obtener los datos actualizados del producto del cuerpo de la solicitud
 
     // Busca el producto por ID
-    const productToUpdate = productManager.getProductById(parseInt(pid));
+    const productToUpdate = productManager.getProductById(parseInt(pid))
 
     if (!productToUpdate) {
-        return res.status(404).json({ error: 'Producto no encontrado' });
+        return res.status(404).json({ error: 'Producto no encontrado' })
     }
 
     // Actualiza los campos del producto (excepto el ID)
-    Object.assign(productToUpdate, updatedProductData);
+    Object.assign(productToUpdate, updatedProductData)
 
     // Guarda los productos actualizados en el archivo "productos.json"
-    productManager.saveProducts();
+    productManager.saveProducts()
 
     // Envía una respuesta con el producto actualizado
-    res.json({ message: 'Producto actualizado correctamente', updatedProduct: productToUpdate });
-});
+    res.json({ message: 'Producto actualizado correctamente', updatedProduct: productToUpdate })
+})
 
 router.delete('/:pid', (req, res) => {
-    const { pid } = req.params; // Obtén el ID del producto de los parámetros de la URL
+    const { pid } = req.params // Obtén el ID del producto de los parámetros de la URL
 
     // Busca el producto por ID
-    const productToDelete = productManager.getProductById(parseInt(pid));
+    const productToDelete = productManager.getProductById(parseInt(pid))
 
     if (!productToDelete) {
-        return res.status(404).json({ error: 'Producto no encontrado' });
+        return res.status(404).json({ error: 'Producto no encontrado' })
     }
 
     // Elimina el producto de la lista de productos
-    productManager.deleteProduct(parseInt(pid));
+    productManager.deleteProduct(parseInt(pid))
 
     // Guarda los productos actualizados en el archivo "productos.json"
-    productManager.saveProducts();
+    productManager.saveProducts()
 
     // Envio el evento 'nueva-solicitud' al servidor que esta escuchando en 'views.router' para que ejecute el evento 'productos-actualizados'
-    socketServer.emit('nueva-solicitud')
+    // socketServer.emit('nueva-solicitud')
+
+    socketServer.emit('productos-actualizados', productManager.getProducts())
 
     // Envía una respuesta con un mensaje de éxito
-    res.json({ message: 'Producto eliminado correctamente' });
-});
+    res.json({ message: 'Producto eliminado correctamente' })
+})
 
 export default router

@@ -108,5 +108,16 @@
     "category": "Shampoo",
     "thumbnails": "",
     "id": 10
+  },
+  {
+    "title": "asdasd",
+    "description": "asdasd",
+    "code": "asdasd",
+    "price": "asdasd",
+    "status": true,
+    "stock": "asdasd",
+    "category": "asdasd",
+    "thumbnails": [],
+    "id": 11
   }
 ]
