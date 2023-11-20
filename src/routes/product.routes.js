@@ -99,6 +99,8 @@ router.put('/:pid', (req, res) => {
 router.delete('/:pid', (req, res) => {
     const { pid } = req.params // Obtén el ID del producto de los parámetros de la URL
 
+    console.log(`Solicitud DELETE a /${pid}`)
+
     // Busca el producto por ID
     const productToDelete = productManager.getProductById(parseInt(pid))
 
