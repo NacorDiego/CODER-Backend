@@ -5,7 +5,7 @@ dotenv.config() // Cargo variables de entorno desde .env
 
 export const connectDB = async () => {
     try {
-        const mongoURI = process.env.MONGO_URI
+        const mongoURI = process.env.MONGO_URI // Guardo el valor de la variable de entorno MONGO_URI.
 
         if (!mongoURI) {
             throw new Error('La variable de entorno MONGO_URI no está configurada.')

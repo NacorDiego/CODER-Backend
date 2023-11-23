@@ -1,21 +1,19 @@
 import express from 'express'
-import ProductManager from '../managers/ProductManager.js'
+import productManagerMongo from '../managers/ProductManagerMongo.js'
 import { socketServer } from '../app.js'
 import path from 'path'
 
 const router = express.Router()
 
-// Crear una instancia de ProductManager con la ruta al archivo de productos
-// const productManager = new ProductManager('./data/productos.json')
-
-const productosJsonPath = path.join(process.cwd(), 'src/data/productos.json')
-const productManager = new ProductManager(productosJsonPath)
+// Con FS.
+// const productosJsonPath = path.join(process.cwd(), 'src/data/productos.json')
+// const productManagerMongo = new ProductManager(productosJsonPath)
 
 router.get('/', (req, res) => {
     console.log('Solicitud GET a /products')
     const { limit } = req.query
 
-    const products = productManager.getProducts()
+    const products = productManagerMongo.getProducts()
     console.log('Productos:', products)
 
     if (limit) {
@@ -29,7 +27,7 @@ router.get('/', (req, res) => {
 // Endpoint para obtener un producto por ID
 router.get('/:pid', (req, res) => {
     const { pid } = req.params
-    const product = productManager.getProductById(parseInt(pid))
+    const product = productManagerMongo.getProductById(parseInt(pid))
 
     if (product) {
         res.json(product)
@@ -61,15 +59,15 @@ router.post('/', (req, res) => {
     }
 
     // Agregar el nuevo producto al conjunto de productos
-    productManager.addProduct(newProduct)
+    productManagerMongo.addProduct(newProduct)
 
     // Guardar los productos actualizados en el archivo "productos.json"
-    productManager.saveProducts()
+    // productManagerMongo.saveProducts()
 
     // Envio el evento 'nueva-solicitud' al servidor que esta escuchando en 'views.router' para que ejecute el evento 'productos-actualizados'
     // socketServer.emit('nueva-solicitud')
 
-    socketServer.emit('productos-actualizados', productManager.getProducts())
+    socketServer.emit('productos-actualizados', productManagerMongo.getProducts())
 
     // Enviar una respuesta de éxito
     res.status(201).json({ message: 'Producto agregado correctamente', newProduct })
@@ -80,7 +78,7 @@ router.put('/:pid', (req, res) => {
     const updatedProductData = req.body // Obtener los datos actualizados del producto del cuerpo de la solicitud
 
     // Busca el producto por ID
-    const productToUpdate = productManager.getProductById(parseInt(pid))
+    const productToUpdate = productManagerMongo.getProductById(parseInt(pid))
 
     if (!productToUpdate) {
         return res.status(404).json({ error: 'Producto no encontrado' })
@@ -90,7 +88,7 @@ router.put('/:pid', (req, res) => {
     Object.assign(productToUpdate, updatedProductData)
 
     // Guarda los productos actualizados en el archivo "productos.json"
-    productManager.saveProducts()
+    // productManagerMongo.saveProducts()
 
     // Envía una respuesta con el producto actualizado
     res.json({ message: 'Producto actualizado correctamente', updatedProduct: productToUpdate })
@@ -102,22 +100,22 @@ router.delete('/:pid', (req, res) => {
     console.log(`Solicitud DELETE a /${pid}`)
 
     // Busca el producto por ID
-    const productToDelete = productManager.getProductById(parseInt(pid))
+    const productToDelete = productManagerMongo.getProductById(parseInt(pid))
 
     if (!productToDelete) {
         return res.status(404).json({ error: 'Producto no encontrado' })
     }
 
     // Elimina el producto de la lista de productos
-    productManager.deleteProduct(parseInt(pid))
+    productManagerMongo.deleteProduct(parseInt(pid))
 
     // Guarda los productos actualizados en el archivo "productos.json"
-    productManager.saveProducts()
+    // productManagerMongo.saveProducts()
 
     // Envio el evento 'nueva-solicitud' al servidor que esta escuchando en 'views.router' para que ejecute el evento 'productos-actualizados'
     // socketServer.emit('nueva-solicitud')
 
-    socketServer.emit('productos-actualizados', productManager.getProducts())
+    socketServer.emit('productos-actualizados', productManagerMongo.getProducts())
 
     // Envía una respuesta con un mensaje de éxito
     res.json({ message: 'Producto eliminado correctamente' })

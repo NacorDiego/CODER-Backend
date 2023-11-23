@@ -7,21 +7,27 @@ class ProductManager {
         this.loadProducts()
     }
 
-    loadProducts() {
+    async loadProducts() {
+        // try {
+        //     const data = fs.readFileSync(this.path, 'utf8')
+        //     this.products = JSON.parse(data)
+        // } catch (error) {
+        //     this.products = []
+        // }
         try {
-            const data = fs.readFileSync(this.path, 'utf8')
-            this.products = JSON.parse(data)
+            this.products = await productModel.find()
         } catch (error) {
             this.products = []
         }
     }
 
-    saveProducts() {
-        try {
-            fs.writeFileSync(this.path, JSON.stringify(this.products, null, 2), 'utf8')
-        } catch (error) {
-            console.error('Error al guardar productos:', error)
-        }
+    async saveProducts() {
+        // try {
+        //     fs.writeFileSync(this.path, JSON.stringify(this.products, null, 2), 'utf8')
+        // } catch (error) {
+        //     console.error('Error al guardar productos:', error)
+        // }
+
     }
 
     addProduct(product) {
