@@ -5,6 +5,7 @@ import productRoutes from './routes/product.routes.js'
 import cartRoutes from './routes/cart.routes.js'
 import { viewsRouter } from './routes/views.routes.js'
 import { engine } from 'express-handlebars'
+import { connectDB } from './config/dbConnection.js'
 
 const port = 8080
 const app = express()
@@ -41,5 +42,6 @@ io.on('connection', socket => {
 })
 
 httpServer.listen(port, () => console.log(`Server is running at http://localhost:${port}`))
+connectDB()
 
 export const socketServer = io
