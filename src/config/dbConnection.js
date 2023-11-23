@@ -1,8 +1,17 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
+import dotenv from 'dotenv'
+
+dotenv.config() // Cargo variables de entorno desde .env
 
 export const connectDB = async () => {
     try {
-        await mongoose.connect("mongodb+srv://admin:NJQKAf2FYdKZeOCF@cluster0.dlqeszu.mongodb.net/ecommerce?retryWrites=true&w=majority")
+        const mongoURI = process.env.MONGO_URI
+
+        if (!mongoURI) {
+            throw new Error('La variable de entorno MONGO_URI no está configurada.')
+        }
+
+        await mongoose.connect(mongoURI)
         console.log('Base de datos conectada con éxito.');
     } catch (error) {
         console.error(`Error al conectar la base de datos: ${error.message}`)

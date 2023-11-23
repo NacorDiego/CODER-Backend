@@ -2,7 +2,6 @@ import express from 'express'
 import ProductManager from '../managers/ProductManager.js'
 import { socketServer } from '../app.js'
 import path from 'path'
-import { productModel } from "../models/products.model.js"
 
 const router = express.Router()
 
