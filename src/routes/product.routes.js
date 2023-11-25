@@ -1,128 +1,95 @@
 import express from 'express'
-import ProductManagerMongo from '../managers/ProductManagerMongo.js'
 import { socketServer } from '../app.js'
-import path from 'path'
+import productModel from '../models/products.model.js'
 
 const router = express.Router()
 
-// Con FS.
-// const productosJsonPath = path.join(process.cwd(), 'src/data/productos.json')
-// const productManagerMongo = new ProductManager(productosJsonPath)
-
-// Con Mongo
-const productManagerMongo = new ProductManagerMongo()
-
-
-router.get('/', (req, res) => {
-    console.log('Solicitud GET a /products')
-    const { limit } = req.query
-
-    const products = productManagerMongo.getProducts()
-    console.log('Productos:', products)
-
-    if (limit) {
-        const limitedProducts = products.slice(0, parseInt(limit))
-        res.json(limitedProducts)
-    } else {
-        res.json(products)
+router.get('/', async (req, res) => {
+    console.log('Solicitud GET a /api/productos')
+    try {
+        const products = await productModel.find()
+        res.json({status: "Success", data: products})
+    } catch (error) {
+        console.error(error.message)
+        res.json({status: "Error", message: "No se pudo obtener la lista de productos"})
     }
 })
 
 // Endpoint para obtener un producto por ID
-router.get('/:pid', (req, res) => {
+router.get('/:pid', async (req, res) => {
     const { pid } = req.params
-    const product = productManagerMongo.getProductById(parseInt(pid))
-
-    if (product) {
-        res.json(product)
-    } else {
-        res.status(404).json({ error: 'Producto no encontrado' })
+    console.log(`Solicitud GET a /api/productos/${pid}`)
+    try {
+        const product = await productModel.findById(pid)
+        res.json({status: "Success", data:product})
+    } catch (error) {
+        console.error(error.message)
+        res.json({status: "Error", message: "No se puede obtener el producto"})
     }
 })
 
-router.post('/', (req, res) => {
-    console.log('Solicitud POST a /') // Registro de depuración
+router.post('/', async (req, res) => {
+    console.log('Solicitud POST a /api/productos') // Registro de depuración
 
-    const { title, description, code, price, stock, category, thumbnails } = req.body
+    try {
+        const { title, description, code, price, stock, category, thumbnails } = req.body
 
-    // Validar que todos los campos obligatorios estén presentes
-    if (!title || !description || !code || !price || !stock || !category) {
-        return res.status(400).json({ error: 'Todos los campos obligatorios deben estar presentes' })
+        // Validar que todos los campos obligatorios estén presentes
+        if (!title || !description || !code || !price || !stock || !category) {
+            return res.status(400).json({ error: 'Todos los campos obligatorios deben estar presentes' })
+        }
+
+        // Crear un nuevo objeto de producto con los campos proporcionados
+        const newProduct = {
+            title,
+            description,
+            code,
+            price,
+            status: true, // Por defecto, el status es true
+            stock,
+            category,
+            thumbnails: thumbnails || "", // Si no se proporciona "thumbnails", se establece una cadena vacía.
+        }
+
+        const productCreated = await productModel.create(newProduct)
+        res.json({status: "Success", data: productCreated})
+
+        socketServer.emit('productos-actualizados', await productModel.find())
+
+    } catch (error) {
+        console.error(error.message)
+        res.json({status: "Error", message: "No se pudo crear el producto"})
     }
-
-    // Crear un nuevo objeto de producto con los campos proporcionados
-    const newProduct = {
-        title,
-        description,
-        code,
-        price,
-        status: true, // Por defecto, el status es true
-        stock,
-        category,
-        thumbnails: thumbnails || "", // Si no se proporciona "thumbnails", usar un array vacío
-    }
-
-    // Agregar el nuevo producto al conjunto de productos
-    productManagerMongo.addProduct(newProduct)
-
-    // Guardar los productos actualizados en el archivo "productos.json"
-    // productManagerMongo.saveProducts()
-
-    // Envio el evento 'nueva-solicitud' al servidor que esta escuchando en 'views.router' para que ejecute el evento 'productos-actualizados'
-    // socketServer.emit('nueva-solicitud')
-
-    socketServer.emit('productos-actualizados', productManagerMongo.getProducts())
-
-    // Enviar una respuesta de éxito
-    res.status(201).json({ message: 'Producto agregado correctamente', newProduct })
 })
 
-router.put('/:pid', (req, res) => {
+router.put('/:pid', async (req, res) => {
     const { pid } = req.params // Obtener el ID del producto de los parámetros de la URL
-    const updatedProductData = req.body // Obtener los datos actualizados del producto del cuerpo de la solicitud
+    console.log(`Solicitud PUT a /api/productos/${pid}`)
 
-    // Busca el producto por ID
-    const productToUpdate = productManagerMongo.getProductById(parseInt(pid))
+    try {
+        const productReplace = req.body
 
-    if (!productToUpdate) {
-        return res.status(404).json({ error: 'Producto no encontrado' })
+        const productUpdated = await productModel.updateOne({ _id: pid }, productReplace)
+        res.json({status: "Success", data: productUpdated})
+    } catch (error) {
+        console.error(error.message)
+        res.json({status: "Error", message: "No se pudo actualizar el producto"})
     }
-
-    // Actualiza los campos del producto (excepto el ID)
-    Object.assign(productToUpdate, updatedProductData)
-
-    // Guarda los productos actualizados en el archivo "productos.json"
-    // productManagerMongo.saveProducts()
-
-    // Envía una respuesta con el producto actualizado
-    res.json({ message: 'Producto actualizado correctamente', updatedProduct: productToUpdate })
 })
 
-router.delete('/:pid', (req, res) => {
+router.delete('/:pid', async (req, res) => {
     const { pid } = req.params // Obtén el ID del producto de los parámetros de la URL
+    console.log(`Solicitud DELETE a /api/productos/${pid}`)
 
-    console.log(`Solicitud DELETE a /${pid}`)
+    try {
+        const productDelete = await productModel.deleteOne({ _id: pid })
+        res.json({status: "Success", data: productDelete})
 
-    // Busca el producto por ID
-    const productToDelete = productManagerMongo.getProductById(parseInt(pid))
-
-    if (!productToDelete) {
-        return res.status(404).json({ error: 'Producto no encontrado' })
+        socketServer.emit('productos-actualizados', await productModel.find())
+    } catch (error) {
+        console.error(error.message)
+        res.json({status: "Error", message: "No se pudo eliminar el producto"})
     }
-
-    // Elimina el producto de la lista de productos
-    productManagerMongo.deleteProduct(parseInt(pid))
-
-    // Guarda los productos actualizados en el archivo "productos.json"
-    // productManagerMongo.saveProducts()
-
-    // Envio el evento 'nueva-solicitud' al servidor que esta escuchando en 'views.router' para que ejecute el evento 'productos-actualizados'
-    // socketServer.emit('nueva-solicitud')
-
-    socketServer.emit('productos-actualizados', productManagerMongo.getProducts())
-
-    // Envía una respuesta con un mensaje de éxito
-    res.json({ message: 'Producto eliminado correctamente' })
 })
 
 export default router
