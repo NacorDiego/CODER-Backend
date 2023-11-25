@@ -35,6 +35,7 @@
 <script>
     // Enviar solicitud para agregar producto por AJAX
     async function addProduct() {
+        console.log("--------- addProduct() ----------")
         const newTitle = document.getElementById('newTitle').value
         const newDescription = document.getElementById('newDescription').value
         const newCode = document.getElementById('newCode').value
@@ -59,7 +60,7 @@
             })
 
             const data = await response.json()
-            console.log(data)
+            console.log(`data en addProduct(): ${data}`)
 
             // Actualizo la vista después de agregar el producto
             updateProductList()
@@ -89,6 +90,7 @@
 
     // Actualizar lista de productos
     async function updateProductList () {
+        console.log("---------- updateProductList() ------------")
         try {
             // Solicitud GET para obtener la lista actualizada
             const response = await fetch('/api/productos')
@@ -111,6 +113,7 @@
 
     // Actualizo lista de productos al cargar la página
     window.addEventListener('DOMContentLoaded', () => {
+        console.log("---------- Cargo el contenido de la página -----------")
         updateProductList()
     })
 </script>

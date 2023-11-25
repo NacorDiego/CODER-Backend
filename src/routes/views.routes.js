@@ -1,10 +1,10 @@
 import { Router } from 'express'
-import ProductManager from '../managers/ProductManager.js'
+import ProductManagerMongo from '../managers/ProductManagerMongo.js'
 
 const router = Router()
 
 export const viewsRouter = (io) => {
-    const productManager = new ProductManager(process.cwd() + '/src/data/productos.json')
+    const productManager = new ProductManagerMongo()
 
     router.get('/', (req, res) => {
       const products = productManager.getProducts()
@@ -13,6 +13,7 @@ export const viewsRouter = (io) => {
 
     router.get('/realtimeproducts', (req, res) => {
       const products = productManager.getProducts()
+      console.log(`Productos /realtimeproducts: ${products}`)
       res.render('realTimeProducts', { products })
     })
 

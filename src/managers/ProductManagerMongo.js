@@ -21,7 +21,9 @@ class ProductManagerMongo {
 
     async getProducts() {
         try {
-            return await productModel.find()
+            const products = await productModel.find()
+            console.log(`Products en getProducts(): ${products}`)
+            return products
         } catch (error) {
             console.error(`Error al obtener productos: ${error}`)
             return []

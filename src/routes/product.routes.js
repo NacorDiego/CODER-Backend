@@ -1,5 +1,5 @@
 import express from 'express'
-import productManagerMongo from '../managers/ProductManagerMongo.js'
+import ProductManagerMongo from '../managers/ProductManagerMongo.js'
 import { socketServer } from '../app.js'
 import path from 'path'
 
@@ -8,6 +8,10 @@ const router = express.Router()
 // Con FS.
 // const productosJsonPath = path.join(process.cwd(), 'src/data/productos.json')
 // const productManagerMongo = new ProductManager(productosJsonPath)
+
+// Con Mongo
+const productManagerMongo = new ProductManagerMongo()
+
 
 router.get('/', (req, res) => {
     console.log('Solicitud GET a /products')
@@ -55,7 +59,7 @@ router.post('/', (req, res) => {
         status: true, // Por defecto, el status es true
         stock,
         category,
-        thumbnails: thumbnails || [], // Si no se proporciona "thumbnails", usar un array vacío
+        thumbnails: thumbnails || "", // Si no se proporciona "thumbnails", usar un array vacío
     }
 
     // Agregar el nuevo producto al conjunto de productos
